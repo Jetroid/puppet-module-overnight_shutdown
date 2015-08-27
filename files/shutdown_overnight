@@ -8,10 +8,10 @@
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
 
 # Load config
-CONFIG_FILE="/etc/greenlab/shutdown_overnight.conf";
+CONFIG_FILE="/etc/shutdown_overnight/shutdown_overnight.conf";
 . $CONFIG_FILE;
 
-# Validate settings and set defaults
+# Validate settings and set defaults in case config file is broken.
 if [ -z "$SHUTDOWN_MSG" ]; then
   SHUTDOWN_MSG="This computer is shutting down for the night.  Please save your work.";
 fi;
@@ -21,19 +21,19 @@ if [ -z "$SHUTDOWN_DELAY" ]; then
 fi;
 
 if [ -z "$DO_WAKE" ]; then
-  DO_WAKE=1;
+  DO_WAKE=true;
 fi;
 
 if [ -z "$DO_SECUPDATE" ]; then
-  DO_SECUPDATE=0;
+  DO_SECUPDATE=false;
 fi;
 
 if [ -z "$SECUPDATE_LOG" ]; then
-  SECUPDATE_LOG="/var/log/apt/greenlab-security-updates.log";
+  SECUPDATE_LOG="/var/log/apt/shutdown-overnight-security-updates.log";
 fi;
 
 # Perform security update if necessary
-if [ $DO_SECUPDATE -eq 1 ]; then
+if [ $DO_SECUPDATE = true ]; then
   #echo "Doing a security update...";
   echo "**************" >> $SECUPDATE_LOG;
   date >> $SECUPDATE_LOG;
@@ -43,7 +43,7 @@ fi;
 
 
 # LOTS of special stuff to do if we're waking up later!
-if [ $DO_WAKE -eq 1 ]; then
+if [ $DO_WAKE = true ]; then
 
   # Default minutes to 00, day to 1, replace "tomorrow" with 1
   if [ -z $WAKE_MIN ]; then
