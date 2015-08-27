@@ -1,0 +1,6 @@
+#       This file is being maintained by Puppet.
+# 	DO NOT EDIT
+#
+# Schedules the machine to shutdown for the night at <%= scope.lookupvar('shutdown_hour') %>:<%= scope.lookupvar('shutdown_minute') %>
+#
+<%= scope.lookupvar('shutdown_minute') %> <%= scope.lookupvar('shutdown_hour') %> * * * root /usr/sbin/shutdown_overnight 2>&1 >/var/log/shutdown_overnight.log

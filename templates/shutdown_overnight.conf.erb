@@ -1,0 +1,15 @@
+SHUTDOWN_MSG="<%= scope.lookupvar('shutdown_message') %>";
+SHUTDOWN_DELAY="<%= scope.lookupvar('shutdown_delay') %>";
+DO_WAKE=<%= scope.lookupvar('do_auto_wake') %>;
+DO_SECUPDATE=<%= scope.lookupvar('do_security_updates') %>;
+SECUPDATE_LOG="<%= scope.lookupvar('security_logfile') %>";
+WAKE_HOUR=<%= scope.lookupvar('wakeup_hour') %>;
+WAKE_MIN=<%= scope.lookupvar('wakeup_minute') %>;
+WAKE_DAYS="<%- if scope.lookupvar('wake_monday') -%>1 <%- end -%>
+<%- if scope.lookupvar('wake_tuesday') -%>2 <%- end -%>
+<%- if scope.lookupvar('wake_wednesday') -%> 3<%- end -%>
+<%- if scope.lookupvar('wake_thursday') -%>4 <%- end -%>
+<%- if scope.lookupvar('wake_friday') -%>5 <%- end -%>
+<%- if scope.lookupvar('wake_saturday') -%>6 <%- end -%>
+<% if scope.lookupvar('wake_sunday') -%>7<% end -%>
+"

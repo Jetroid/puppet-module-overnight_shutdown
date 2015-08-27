@@ -1,0 +1,11 @@
+#       This file is being maintained by Puppet.
+# 	DO NOT EDIT
+#
+# Ensure our logfiles don't fill the disk
+<%= scope.lookupvar('security_logfile') %> {
+  rotate 52
+  weekly
+  compress
+  missingok
+  notifempty
+}
