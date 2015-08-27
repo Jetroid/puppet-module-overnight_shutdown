@@ -1,0 +1,14 @@
+{
+  "name": "Jetroid-overnight_shutdown",
+  "version": "0.1.0",
+  "author": "Jetroid",
+  "summary": "A module to turn a machine off, optionally do a security update, and reboot in the morning.",
+  "license": "Apache 2.0",
+  "source": "",
+  "project_page": null,
+  "issues_url": null,
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ]
+}
+
