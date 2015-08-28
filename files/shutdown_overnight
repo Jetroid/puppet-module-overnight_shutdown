@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#       This file is being maintained by Puppet.
+# 	DO NOT EDIT
+
 # Tells the machine to shutdown overnight
 # after setting the wakeup timer for the morning.
 # Optionally performs a security update first.

@@ -1,3 +1,6 @@
+#       This file is being maintained by Puppet.
+# 	DO NOT EDIT
+#
 SHUTDOWN_MSG="<%= scope.lookupvar('shutdown_message') %>";
 SHUTDOWN_DELAY="<%= scope.lookupvar('shutdown_delay') %>";
 DO_WAKE=<%= scope.lookupvar('do_auto_wake') %>;
@@ -7,7 +10,7 @@ WAKE_HOUR=<%= scope.lookupvar('wakeup_hour') %>;
 WAKE_MIN=<%= scope.lookupvar('wakeup_minute') %>;
 WAKE_DAYS="<%- if scope.lookupvar('wake_monday') -%>1 <%- end -%>
 <%- if scope.lookupvar('wake_tuesday') -%>2 <%- end -%>
-<%- if scope.lookupvar('wake_wednesday') -%> 3<%- end -%>
+<%- if scope.lookupvar('wake_wednesday') -%>3 <%- end -%>
 <%- if scope.lookupvar('wake_thursday') -%>4 <%- end -%>
 <%- if scope.lookupvar('wake_friday') -%>5 <%- end -%>
 <%- if scope.lookupvar('wake_saturday') -%>6 <%- end -%>
