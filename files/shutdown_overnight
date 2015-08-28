@@ -130,7 +130,6 @@ if [ $DO_WAKE = true ]; then
 fi # End of wake-up-later code
 
 # Shutdown
-notify-send $SHUTDOWN_MSG
-notify-send "This machine will turn off in ${SHUTDOWN_DELAY} minutes."
-/sbin/shutdown -h +$SHUTDOWN_DELAY "$SHUTDOWN_MSG";
-
+notify-send "$SHUTDOWN_MSG";
+notify-send "This machine will turn off in ${SHUTDOWN_DELAY} minutes.";
+/sbin/shutdown -h +$SHUTDOWN_DELAY | while read OUTPUT; do notify-send "$OUTPUT"; echo "$OUTPUT"; done;
