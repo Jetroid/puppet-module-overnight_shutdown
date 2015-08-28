@@ -1,5 +1,22 @@
 class shutdown_overnight::install (
-  $ensure = $shutdown_overnight::ensure,
+  $ensure              = $shutdown_overnight::ensure,
+  $wakeup_hour         = $shutdown_overnight::wakeup_hour,
+  $wakeup_minute       = $shutdown_overnight::wakeup_minute,
+  $shutdown_hour       = $shutdown_overnight::shutdown_hour,
+  $shutdown_minute     = $shutdown_overnight::shutdown_minute,
+  $shutdown_message    = $shutdown_overnight::shutdown_message,
+  $shutdown_delay      = $shutdown_overnight::shutdown_delay,
+  $do_auto_wake        = $shutdown_overnight::do_auto_wake,
+  $do_security_updates = $shutdown_overnight::do_security_updates,
+  $security_logfile    = $shutdown_overnight::security_logfile,
+  $wake_monday         = $shutdown_overnight::wake_monday,
+  $wake_tuesday        = $shutdown_overnight::wake_tuesday,
+  $wake_wednesday      = $shutdown_overnight::wake_wednesday,
+  $wake_thursday       = $shutdown_overnight::wake_thursday,
+  $wake_friday         = $shutdown_overnight::wake_friday,
+  $wake_saturday       = $shutdown_overnight::wake_saturday,
+  $wake_sunday         = $shutdown_overnight::wake_sunday,
+  $notify_package      = $shutdown_overnight::notify_package,
 ) {
 
   # Defaults for the file resource type.
