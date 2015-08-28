@@ -1,0 +1,55 @@
+#!/bin/bash
+
+#       This file is being maintained by Puppet.
+# 	DO NOT EDIT
+
+# Auto-hard-powecycle-izer
+# Uses the BIOS wakeup timer to set a wakeup event in the near future,
+# then powers the machine off.  
+
+# Timeout in minutes
+TIMEOUT=$1;
+
+# Default to 1 min
+if [ -z $TIMEOUT ]; then
+  TIMEOUT=1;
+fi;
+
+# Where to send the wakeup time
+# Ubuntu uses /sys/class/rtc/rtc0/wakealarm
+# RHEL5 uses /proc/acpi/alarm
+WAKEDEV="/dev/null";
+OSNAME=`/usr/bin/env lsb_release -i | awk '{print $NF}'`;
+OSVER=`/usr/bin/env lsb_release -r  | awk '{print $NF}'`;
+
+if [ $OSNAME == 'Ubuntu' ]; then
+  WAKEDEV="/sys/class/rtc/rtc0/wakealarm";
+  # In case wakealarm is already magically set, you must first disable it with a zero before you can rewrite later.
+  echo 0 > $WAKEDEV
+elif [ $OSNAME == 'RedHatEnterpriseClient' ]; then
+  WAKEDEV="/proc/acpi/alarm";
+fi;
+
+if [ -x /usr/sbin/hwclock ]; then
+  HWCLOCK="/usr/sbin/hwclock";
+elif [ -x /sbin/hwclock ]; then
+  HWCLOCK="/sbin/hwclock";
+fi;
+
+# Make sure hardware clock is up to date
+$HWCLOCK -w;
+
+# Set wakeup time to be now + timeout
+WAKEUPTIME=`/bin/date '+%s' -d "+ $TIMEOUT minutes"`;
+
+# If we're using /proc/acpi/alarm, it needs yyyy-mm-dd hh:mm:ss instead.
+if [ $WAKEDEV == '/proc/acpi/alarm' ]; then
+  WAKEUPTIME=`/bin/date -d "@$WAKEUPTIME" "+%Y-%m-%d %H:%M:00"`;
+fi;
+
+# Set the wakeup time
+echo $WAKEUPTIME > $WAKEDEV;
+
+# Shutdown
+/sbin/shutdown -h now;
+

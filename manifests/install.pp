@@ -45,6 +45,13 @@ class shutdown_overnight::install (
     content => template('shutdown_overnight/cron.erb'),
   }
 
+  # Useful script to do a forced powercycle
+  file{'/usr/sbin/powercycle':
+    ensure  => $ensure,
+    mode    => "0700",
+    source  => 'puppet:///modules/shutdown_overnight/powercycle',
+  }
+
   # Rotate the logs so we don't fill up the disk
   file{'/etc/logrotate.d/shutdown_overnight':
     ensure  => $ensure,
