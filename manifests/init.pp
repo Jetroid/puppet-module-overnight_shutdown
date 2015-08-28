@@ -24,6 +24,8 @@ class shutdown_overnight (
 ) inherits shutdown_overnight::params {
 
   validate_re($ensure, '^(present|absent)$',"${ensure} is not allowed for the 'ensure' parameter. Allowed values are 'present' and 'absent'.")
+  validate_bool($do_auto_wake,$do_security_updates,$wake_monday,$wake_tuesday,$wake_wednesday,$wake_thursday,$wake_friday,$wake_saturday,$wake_sunday)
+  validate_string($wakeup_hour,$wakeup_minute,$shutdown_hour,$shutdown_minute,$shutdown_message,$shutdown_delay,$security_logfile,$notify_package)
 
   anchor { 'shutdown_overnight::begin': } ->
   class { '::shutdown_overnight::install': } ->
