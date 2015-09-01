@@ -3,8 +3,7 @@
 #       This file is being maintained by Puppet.
 # 	DO NOT EDIT
 
-# Tells the machine to shutdown overnight
-# after setting the wakeup timer for the morning.
+# Tells the machine to shutdown overnight.
 # Optionally performs a security update first.
 
 # Set PATH to make sure this script runs properly from cron
@@ -23,10 +22,6 @@ if [ -z "$SHUTDOWN_DELAY" ]; then
   SHUTDOWN_DELAY="5";
 fi;
 
-if [ -z "$DO_WAKE" ]; then
-  DO_WAKE=true;
-fi;
-
 if [ -z "$DO_SECUPDATE" ]; then
   DO_SECUPDATE=false;
 fi;
@@ -43,91 +38,6 @@ if [ $DO_SECUPDATE = true ]; then
   aptitude update 2>&1 >>$SECUPDATE_LOG;
   aptitude safe-upgrade -o Aptitude::Delete-Unused=false --assume-yes --target-release `lsb_release -cs`-security --full-resolver 2>&1 >> $SECUPDATE_LOG;
 fi;
-
-
-# LOTS of special stuff to do if we're waking up later!
-if [ $DO_WAKE = true ]; then
-
-  # Default minutes to 00, day to 1, replace "tomorrow" with 1
-  if [ -z $WAKE_MIN ]; then
-    WAKE_MIN=0;
-  fi;
-
-  # No hour given: error
-  if [ -z $WAKE_HOUR ]; then
-    echo;
-    echo "Error: Must supply at least the hour to wake up at!" >&2;
-    echo "Please check $CONFIG_FILE." >&2;
-    exit;
-  fi;
-
-  # Sort the list of days to wake up (this makes life MUCH easier later...)
-  WAKE_DAYS=$(echo $WAKE_DAYS | xargs -n 1 | sort | uniq | xargs);
-  weekday=$(/bin/date +%u);
-
-
-  # We have to find the next day of the week to wake up on.
-  # The list is sorted in order, so simply walk the array
-  # until we find the first entry that's greater than today's weekday.
-  for day in $WAKE_DAYS; do
-    if [ $day -gt $weekday ]; then
-      wakeday=$day;
-      break;
-    fi;
-  done;
-  
-  # If we find none (e.g. today's 7 and the highest wake-up day is 5),
-  # take the first in the list.
-  if [ -z $wakeday ]; then
-    wakeday=$(echo $WAKE_DAYS | cut -d' ' -f1);
-    wakeday=$(( $wakeday + 7 )); # Add 7, as it's next week's version of this day number
-  fi;
-  
-  # Work out how many days in the future that is
-  wakeday=$(( $wakeday - $weekday ));
-  
-  # Where to send the wakeup time
-  # Ubuntu uses /sys/class/rtc/rtc0/wakealarm
-  # RHEL5 uses /proc/acpi/alarm
-  WAKEDEV="/dev/null";
-  OSNAME=`/usr/bin/env lsb_release -i | awk '{print $NF}'`;
-  OSVER=`/usr/bin/env lsb_release -r  | awk '{print $NF}'`;
-  
-  if [ $OSNAME == 'Ubuntu' ]; then
-    WAKEDEV="/sys/class/rtc/rtc0/wakealarm";
-    # In case wakealarm is already magically set, you must first disable it with a zero before you can rewrite later.
-    echo 0 > $WAKEDEV
-  elif [ $OSNAME == 'RedHatEnterpriseClient' ]; then
-    WAKEDEV="/proc/acpi/alarm";
-  fi;
-
-  # Make sure hardware clock is up to date
-  #echo "Sync hardware clock...";
-  hwclock -w;
-
-  # Get the date, in the format that /bin/date will like as input.
-  # We want it to print today's date with the time specified e.g. 9:00 today.
-  TIMETODAY=`/bin/date "+%Y%m%d $WAKE_HOUR:$WAKE_MIN"`;
-
-  # Now format it as a Unix timestamp (however it's still today's date)
-  TIMETODAY=`/bin/date -d "$TIMETODAY" +%s`;
-  # Now add on 86400 * (days into future)
-  # 86400 is the number of seconds in a day
-  WAKEUPTIME=$(($TIMETODAY + (86400 * $wakeday) ));
-  
-  # If we're using /sys/class/rtc/rtc0/wakealarm, it needs a Unix timestamp, which is what we have.
-  # If we're using /proc/acpi/alarm, it needs yyyy-mm-dd hh:mm:ss instead.
-  if [ $WAKEDEV == '/proc/acpi/alarm' ]; then
-    WAKEUPTIME=`/bin/date -d "@$WAKEUPTIME" "+%Y-%m-%d %H:%M:00"`;
-  fi;
-
-
-  # Set wakeup time
-  #echo "Setting alarm call for $WAKE_HOUR:$WAKE_MIN in $wakeday day(s)";
-  #echo "Echoing $WAKEUPTIME to $WAKEDEV";
-  echo $WAKEUPTIME > $WAKEDEV;
-
-fi # End of wake-up-later code
 
 # Shutdown
 notify-send "$SHUTDOWN_MSG";
