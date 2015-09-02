@@ -30,7 +30,16 @@ class shutdown_overnight::install (
     ensure  => $ensure,
   }
 
-  # The script to make is shutdown/restart,etc
+  # The script to (optionally) wake the machine the next appropriate morning.
+  # Runs on boot to schedule for the next day.
+  # This way, a boot is always scheduled.
+  file{'/usr/sbin/morning_wake':
+    ensure  => $ensure,
+    mode    => "0700",
+    source  => 'puppet:///modules/shutdown_overnight/morning_wake',
+  }
+
+  # The script to make the machine shutdown.
   file{'/usr/sbin/shutdown_overnight':
     ensure  => $ensure,
     mode    => "0700",
@@ -38,7 +47,7 @@ class shutdown_overnight::install (
     require => Package[$notify_package],
   } -> 
 
-  # Cron job to run the script at the correct hours
+  # Cron job to run the scripts.
   file{'/etc/cron.d/shutdown_overnight':
     ensure  => $ensure,
     mode    => "0600",

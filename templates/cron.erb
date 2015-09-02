@@ -2,5 +2,11 @@
 # 	DO NOT EDIT
 #
 # Schedules the machine to shutdown for the night at <%= scope.lookupvar('shutdown_hour') %>:<%= scope.lookupvar('shutdown_minute') %>
-#
 <%= scope.lookupvar('shutdown_minute') %> <%= scope.lookupvar('shutdown_hour') %> * * * root /usr/sbin/shutdown_overnight 2>&1 >/var/log/shutdown_overnight.log
+<% wake_hour = scope.lookupvar('wakeup_hour') -%>
+<% wake_minute = scope.lookupvar('wakeup_minute') -%>
+<% if scope.lookupvar('do_auto_wake') -%>
+<%= "# Schedules the machine to wake (on specified mornings) at #{wake_hour}:#{wake_minute}
+# Is run at boot so that a reboot is always scheduled.
+@reboot root /usr/sbin/morning_wake 2>&1 >/var/log/shutdown_overnight.log" -%>
+<% end -%>
