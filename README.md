@@ -103,7 +103,7 @@ Accepts: String
 Default: '/var/log/apt/shutdown-overnight-security-updates.log'
 
 wake_monday, wake_tuesday, wake_wednesday, etc, 
------------
+-----------------------------------------------
 
 Defines if the machine should wake on a Monday, Tuesday, Wednesday, etc.
 This does not overide do_auto_wake - if that is false, the machine will
